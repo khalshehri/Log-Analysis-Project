@@ -32,11 +32,9 @@ This is a python module that uses information of large database of a web server 
 * <h4>Setup Database</h4>
   To load the database use the following command:
   <pre>psql -d news -f newsdata.sql;</pre>
-* <h4>Make Views</h4>
-  Make views by running respective queries on command line or uncomment code written in python module.
 * <h4>Run Module</h4>
   <pre>python news_db.py</pre>
   
 ### Output:
-![Screenshot.jpg](https://imgur.com/EgL1eAD)
+![Screenshot.jpg](https://image.ibb.co/b5NhKf/outbut.png)
 
