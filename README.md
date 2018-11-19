@@ -13,44 +13,17 @@ This is a python module that uses information of large database of a web server 
 * Most popular article authors of all time.
 * Days on which more than 1% of requests lead to errors.
 
-### Functions in log.py:
-* **connect():** Connects to the PostgreSQL database and returns a database connection.
-* **popular_article():** Prints most popular three articles of all time.
-* **popular_authors():** Prints most popular article authors of all time.
-* **log_status():** Print days on which more than 1% of requests lead to errors.
-* **view_popular_articles():** Creates view popular_articles that drives first conclusion.
-* **view_popular_authors():** Creates view popular_authors that drives second conclusion.
-* **view_log_status():** Creates view log_status that drives third conclusion.
+### Functions in news_db.py:
+* **run_query(query):** Connects to the PostgreSQL database and returns a database connection.
+* **top_articles():** Prints most popular three articles of all time.
+* **top_authors():** Prints most popular article authors of all time.
+* **get_errors():** Print days on which more than 1% of requests lead to errors.
 
-### Views Made:
-* <h4>popular_articles</h4>
-```sql
-create or replace view popular_articles as
-select title, count(title) as views from articles,log
-where log.path = concat('/article/',articles.slug)
-group by title order by views desc
-```
-* <h4>popular_authors</h4>
-```sql
-create or replace view popular_authors as
-select authors.name, count(articles.author) as views from articles, log, authors
-where log.path = concat('/article/',articles.slug) and articles.author = authors.id
-group by authors.name order by views desc
-```
-* <h4>log_status</h4>
-```sql
-create or replace view log_status as
-select Date,Total,Error, (Error::float*100)/Total::float as Percent from
-(select time::timestamp::date as Date, count(status) as Total,
-sum(case when status = '404 NOT FOUND' then 1 else 0 end) as Error from log
-group by time::timestamp::date) as result
-where (Error::float*100)/Total::float > 1.0 order by Percent desc;
-```
 
 ## Instructions
 * <h4>Install <a href="https://www.vagrantup.com/">Vagrant</a> and <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox.</a></h4>
 * <h4>Clone the repository to your local machine:</h4>
-  <pre>git clone https://github.com/visheshbanga/Log-Analysis-Udacity-Project</pre>
+  <pre>git clone https://github.com/khalshehri/Log-Analysis-Project.git</pre>
 * <h4>Start the virtual machine</h4>
   From your terminal, inside the project directory, run the command `vagrant up`. This will cause Vagrant to download the Linux           operating   system and install it.
   When vagrant up is finished running, you will get your shell prompt back. At this point, you can run `vagrant ssh` to log in to your     newly installed Linux VM!
@@ -62,8 +35,8 @@ where (Error::float*100)/Total::float > 1.0 order by Percent desc;
 * <h4>Make Views</h4>
   Make views by running respective queries on command line or uncomment code written in python module.
 * <h4>Run Module</h4>
-  <pre>python log.py</pre>
+  <pre>python news_db.py</pre>
   
 ### Output:
-![Screenshot.jpg](https://github.com/visheshbanga/Log-Analysis-Udacity-Project/blob/master/Screenshot.JPG)
+![Screenshot.jpg](https://imgur.com/EgL1eAD)
 
