@@ -1,16 +1,19 @@
-
+#! /usr/bin/env python3
 import psycopg2
 
 DBNAME = "news"
 
 
 def run_query(query):
-    db = psycopg2.connect('dbname=' + DBNAME)
-    c = db.cursor()
-    c.execute(query)
-    results = c.fetchall()
-    db.close()
-    return results
+    try:
+        db = psycopg2.connect('dbname=' + DBNAME)
+        c = db.cursor()
+        c.execute(query)
+        results = c.fetchall()
+        db.close()
+        return results
+    except (psycopg2.DatabaseError, e):
+        print("<error message>")
 
 
 def top_articles():
@@ -35,7 +38,8 @@ def top_authors():
     query = """
         SELECT authors.name, COUNT(*) AS num
         FROM authors, articles, log
-        WHERE authors.id = articles.author AND log.path like concat('%', articles.slug)
+        WHERE authors.id = articles.author
+        AND log.path like concat('%', articles.slug)
         GROUP BY authors.name
         ORDER BY num DESC
         LIMIT 4;
@@ -72,7 +76,9 @@ def get_errors():
         errors = str(round(i[1]*100, 2)) + "%" + " errors"
         print(date + " has " + errors)
 
-print(' Results ')
-top_articles()
-top_authors()
-get_errors()
+
+if __name__ == '__main__':
+    print(' Results ')
+    top_articles()
+    top_authors()
+    get_errors()
